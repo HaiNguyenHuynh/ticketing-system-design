@@ -1,38 +1,73 @@
 from uuid import UUID
+from typing import Optional
 from domain.entities import Ticket
 from domain.repositories import TicketRepository
-from domain.events import TicketCreatedEvent
+from domain.events import TicketCreatedEvent, TicketAssignedEvent
 from domain.exceptions import DomainException
-from application.dtos.create_ticket import CreateTicketInput, CreateTicketOutput
+from application.dtos.tickets.commands import CreateTicketCommand, AssignTicketCommand
+from application.dtos.tickets.responses import TicketResponse
+from application.exceptions import (
+    TicketNotFoundError, 
+    InvalidTicketAssignmentError
+)
 
-class TicketApplicationService:
+class TicketService:
     def __init__(
-        self,
+        self, 
         ticket_repo: TicketRepository,
-        event_bus: EventBus  # Defined in infrastructure
+        event_bus: EventBus
     ):
         self.ticket_repo = ticket_repo
         self.event_bus = event_bus
 
-    def create_ticket(self, input: CreateTicketInput) -> CreateTicketOutput:
-        # Validate business rules
-        ticket = Ticket(
-            title=input.title,
-            description=input.description,
-            priority=input.priority,
-            requester_id=UUID(input.requester_id)
-        )
+    async def create_ticket(self, command: CreateTicketCommand) -> TicketResponse:
+        """Create a new ticket"""
+        try:
+            ticket = Ticket(
+                title=command.title,
+                description=command.description,
+                priority=command.priority,
+                requester_id=command.requester_id
+            )
+            
+            await self.ticket_repo.save(ticket)
+            self.event_bus.publish(TicketCreatedEvent(
+                ticket_id=ticket.ticket_id,
+                title=ticket.title
+            ))
+            
+            return TicketResponse.from_entity(ticket)
+            
+        except DomainException as e:
+            raise ApplicationException(str(e)) from e
 
-        # Persist the ticket
-        self.ticket_repo.save(ticket)
+    async def assign_ticket(
+        self, 
+        ticket_id: UUID, 
+        command: AssignTicketCommand
+    ) -> TicketResponse:
+        """Assign ticket to an agent"""
+        ticket = await self.ticket_repo.find_by_id(ticket_id)
+        if not ticket:
+            raise TicketNotFoundError()
+            
+        try:
+            ticket.assign_to_agent(command.agent_id)
+            await self.ticket_repo.save(ticket)
+            
+            self.event_bus.publish(TicketAssignedEvent(
+                ticket_id=ticket.ticket_id,
+                agent_id=command.agent_id
+            ))
+            
+            return TicketResponse.from_entity(ticket)
+            
+        except DomainException as e:
+            raise InvalidTicketAssignmentError(str(e)) from e
 
-        # Publish domain event
-        self.event_bus.publish(TicketCreatedEvent(
-            ticket_id=ticket.ticket_id,
-            title=ticket.title
-        ))
-
-        return CreateTicketOutput(
-            ticket_id=str(ticket.ticket_id),
-            status=ticket.status.value
-        )
+    async def get_ticket(self, ticket_id: UUID) -> TicketResponse:
+        """Retrieve a ticket"""
+        ticket = await self.ticket_repo.find_by_id(ticket_id)
+        if not ticket:
+            raise TicketNotFoundError()
+        return TicketResponse.from_entity(ticket)
