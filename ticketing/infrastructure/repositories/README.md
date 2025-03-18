@@ -1,1 +1,0 @@
-# TicketRepository (SQLAlchemy/Django ORM)

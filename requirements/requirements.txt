@@ -1,1 +1,9 @@
 pydantic==2.10.6
+fastapi==0.115.11
+sqlalchemy[asyncio]>=2.0
+alembic>=1.0           # For migrations
+python-dotenv>=1.0     # Environment variables
+confluent-kafka>=2.0   # Kafka client
+sendgrid>=6.0          # Email notifications
+twilio>=8.0            # SMS notifications
+python-jose>=3.0       # JWT authentication

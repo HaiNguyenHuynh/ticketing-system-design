@@ -1,1 +1,0 @@
-# Bounded Context: Ticket Management
