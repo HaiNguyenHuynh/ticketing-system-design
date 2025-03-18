@@ -7,3 +7,4 @@ confluent-kafka>=2.0   # Kafka client
 sendgrid>=6.0          # Email notifications
 twilio>=8.0            # SMS notifications
 python-jose>=3.0       # JWT authentication
+dependency-injector==4.46.0
