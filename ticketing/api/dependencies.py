@@ -1,23 +1,15 @@
-from dependency_injector import containers, providers
+from fastapi import Depends
+from dependency_injector.wiring import Provide, inject
+from infrastructure.persistence.database import get_db
+from application.container import ApplicationContainer
 
-from application.services.ticket_service import TicketApplicationService
-from infrastructure.messaging.event_bus import KafkaEventBus
-from infrastructure.persistence.repositories import SqlAlchemyTicketRepository
+def get_ticket_service(
+    db: AsyncSession = Depends(get_db)
+) -> TicketService:
+    """Dependency for ticket service"""
+    return ApplicationContainer.ticket_service(db=db)
 
-
-class Container(containers.DeclarativeContainer):
-    # Infrastructure
-    db_session = providers.Singleton(...)  # Initialize SQLAlchemy session
-    event_bus = providers.Singleton(KafkaEventBus, bootstrap_servers="localhost:9092")
-
-    # Repositories
-    ticket_repo = providers.Factory(SqlAlchemyTicketRepository, db_session=db_session)
-
-    # Application services
-    ticket_service = providers.Factory(
-        TicketApplicationService, ticket_repo=ticket_repo, event_bus=event_bus
-    )
-
-
-def get_ticket_service() -> TicketApplicationService:
-    return Container.ticket_service()
+# For authentication (example)
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
+    user = authenticate_user(token)
+    return user
