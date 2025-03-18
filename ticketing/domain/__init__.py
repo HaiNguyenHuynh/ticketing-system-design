@@ -1,9 +1,9 @@
 # Expose key domain components
-from .enums import TicketStatus, PriorityLevel, UserRole
-from .entities import User, Ticket
 from .aggregates import TicketAggregate
-from .events import TicketCreatedEvent, TicketAssignedEvent
-from .services import TicketAssignmentService, SlaMonitoringService
+from .entities import Ticket, User
+from .enums import PriorityLevel, TicketStatus, UserRole
+from .events import TicketAssignedEvent, TicketCreatedEvent
+from .services import SlaMonitoringService, TicketAssignmentService
 
 __all__ = [
     "User",

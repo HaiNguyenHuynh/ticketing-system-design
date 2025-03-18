@@ -1,5 +1,7 @@
 from unittest.mock import Mock
+
 from domain.repositories import TicketRepository
+
 
 class MockTicketRepository(TicketRepository):
     def __init__(self):

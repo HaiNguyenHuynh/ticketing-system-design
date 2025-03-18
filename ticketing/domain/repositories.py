@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
+
 from .entities import Ticket, User
+
 
 # Repository interfaces (implemented in infrastructure layer)
 class TicketRepository(ABC):
@@ -11,6 +13,7 @@ class TicketRepository(ABC):
     @abstractmethod
     def find_by_id(self, ticket_id: UUID) -> Ticket | None:
         pass
+
 
 class UserRepository(ABC):
     @abstractmethod

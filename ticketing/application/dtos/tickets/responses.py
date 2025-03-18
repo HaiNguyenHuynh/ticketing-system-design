@@ -1,7 +1,12 @@
-from pydantic import BaseModel
-from uuid import UUID
 from datetime import datetime
-from domain.enums import TicketStatus, PriorityLevel
+from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel
+
+from domain.enums import PriorityLevel, TicketStatus
+from ticketing.domain.entities import Ticket
+
 
 class TicketResponse(BaseModel):
     ticket_id: UUID
@@ -25,8 +30,9 @@ class TicketResponse(BaseModel):
             requester_id=ticket.requester_id,
             assigned_agent_id=ticket.assigned_agent_id,
             created_at=ticket.created_at,
-            updated_at=ticket.updated_at
+            updated_at=ticket.updated_at,
         )
+
 
 class TicketListResponse(BaseModel):
     tickets: list[TicketResponse]

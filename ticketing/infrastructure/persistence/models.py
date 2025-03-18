@@ -1,12 +1,14 @@
-from sqlalchemy import Column, String, Enum, UUID
+from sqlalchemy import UUID, Column, Enum, String
 from sqlalchemy.orm import declarative_base
-from domain.enums import TicketStatus, PriorityLevel
+
+from domain.enums import PriorityLevel, TicketStatus
 
 Base = declarative_base()
 
+
 class TicketModel(Base):
     __tablename__ = "tickets"
-    
+
     id = Column(UUID, primary_key=True)
     title = Column(String(100))
     description = Column(String(1000))

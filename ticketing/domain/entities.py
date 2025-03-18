@@ -1,8 +1,11 @@
-from pydantic import BaseModel, field_validator, Field
-from uuid import UUID, uuid4
 from datetime import datetime
-from .enums import TicketStatus, PriorityLevel, UserRole
-from .value_objects import ContactDetails, Comment
+from uuid import UUID, uuid4
+
+from pydantic import BaseModel, Field, field_validator
+
+from .enums import PriorityLevel, TicketStatus, UserRole
+from .value_objects import Comment, ContactDetails
+
 
 class User(BaseModel):
     user_id: UUID = Field(default_factory=uuid4)
@@ -15,6 +18,7 @@ class User(BaseModel):
         if " " not in v:
             raise ValueError("Name must contain a space")
         return v
+
 
 class Ticket(BaseModel):
     ticket_id: UUID = Field(default_factory=uuid4)
