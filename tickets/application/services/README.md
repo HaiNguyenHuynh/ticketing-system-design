@@ -1,0 +1,1 @@
+# TicketApplicationService (use cases)

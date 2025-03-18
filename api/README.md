@@ -1,0 +1,1 @@
+# Adapter Layer (REST/GraphQL API)

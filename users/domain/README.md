@@ -1,0 +1,1 @@
+# User entity, Role value object

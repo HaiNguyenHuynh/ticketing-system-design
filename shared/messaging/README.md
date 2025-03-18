@@ -1,0 +1,1 @@
+# Event bus (e.g., Kafka/RabbitMQ client)
