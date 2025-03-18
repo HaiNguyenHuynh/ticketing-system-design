@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 from .entities import Ticket
 from .repositories import TicketRepository, UserRepository
