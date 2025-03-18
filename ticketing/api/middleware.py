@@ -1,6 +1,7 @@
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 
+
 def add_cors_middleware(app: FastAPI):
     app.add_middleware(
         CORSMiddleware,
@@ -9,6 +10,7 @@ def add_cors_middleware(app: FastAPI):
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
 
 async def log_requests(request: Request, call_next):
     """Example custom middleware"""

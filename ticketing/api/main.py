@@ -1,12 +1,9 @@
 from fastapi import FastAPI
-from .routers import tickets, users, health
-from .middleware import add_cors_middleware
 
-app = FastAPI(
-    title="Ticketing System API",
-    version="1.0.0",
-    docs_url="/docs"
-)
+from .middleware import add_cors_middleware
+from .routers import health, tickets, users
+
+app = FastAPI(title="Ticketing System API", version="1.0.0", docs_url="/docs")
 
 # Include routers
 app.include_router(tickets.router, prefix="/api/v1/tickets", tags=["tickets"])
